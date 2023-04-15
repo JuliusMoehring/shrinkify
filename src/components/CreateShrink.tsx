@@ -30,7 +30,7 @@ export const CreateShrink: Component = () => {
         <>
             <form
                 id="shrinkify"
-                class="grid grid-cols-12 place-content-baseline gap-3 pt-32 sm:pt-48 lg:pt-56"
+                class="grid grid-cols-12 place-content-baseline gap-3 py-56"
                 spellcheck={false}
                 novalidate
                 onSubmit={async event => {
