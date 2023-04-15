@@ -1,0 +1,49 @@
+---
+const faq = [
+    {
+        question: 'How does it work?',
+        answer: 'Just enter a URL path into the short link field and an URL where this path should be redirected to. We will check in the background if the path is already taken. If not, we will create a new short link for you.',
+    },
+    {
+        question: 'What do the different status codes mean?',
+        answer: 'HTTP status codes are important for the communication between the server and the browser. Based on the status code the browser knows how to handle the response. Since shrinkify always does a redirect, the status code is always in the 3xx range. The most common status codes are 301 and 302. Based on how long the redirect should be valid another status code needs to be set. For more information, check out the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages" class="font-semibold text-primary-600 hover:text-primary-500" target="_blank">MDN web docs</a>.',
+    },
+    {
+        question: 'How does the expiration work?',
+        answer: 'By default the short links will not expire at all. If you want a short link to be only working until a certain date, you can set an expiration date. The short link will then be automatically deleted after the expiration date.',
+    },
+    {
+        question: 'Why did I make the project?',
+        answer: 'I am always looking for new ways to improve my skills and learn new things. I also wanted to create something that I could use myself.',
+    },
+];
+---
+
+<div id="more" class="mx-auto max-w-7xl px-6 py-24 sm:pt-32 lg:px-8 lg:py-40">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+        <div class="lg:col-span-5">
+            <h2 class="text-2xl font-bold leading-10 tracking-tight text-gray-900">About the project</h2>
+
+            <p class="mt-4 text-base leading-7 text-gray-600">
+                Want to know more about the project? Just send me a DM on <a
+                    href="https://twitter.com/julius_mohring"
+                    class="font-semibold text-primary-600 hover:text-primary-500"
+                    target="_blank">Twitter</a
+                >.
+            </p>
+        </div>
+        <div class="mt-10 lg:col-span-7 lg:mt-0">
+            <dl class="space-y-10">
+                {
+                    faq.map(({ question, answer }) => (
+                        <div>
+                            <dt class="text-base font-semibold leading-7 text-gray-900">{question}</dt>
+
+                            <dd class="mt-2 text-base leading-7 text-gray-600" set:html={answer} />
+                        </div>
+                    ))
+                }
+            </dl>
+        </div>
+    </div>
+</div>
