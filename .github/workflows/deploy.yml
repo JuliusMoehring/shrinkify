@@ -33,7 +33,6 @@ jobs:
             - name: Build
               shell: 'bash'
               run: |
-                  echo ${{ env.PUBLIC_API_URL }}
                   npm run build
 
             - name: Upload Pages Artifact
