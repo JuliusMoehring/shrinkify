@@ -33,6 +33,7 @@ jobs:
             - name: Build
               shell: 'bash'
               run: |
+                  printenv
                   npm run build
 
             - name: Upload Pages Artifact
