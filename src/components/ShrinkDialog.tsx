@@ -46,10 +46,8 @@ export const ShrinkDialog: Component<ShrinkDialogProps> = ({ shrink }) => {
 
                     <Button
                         onClick={() => {
-                            const redirect = shrink();
-
                             if (redirect) {
-                                navigator.clipboard.writeText(redirect);
+                                navigator.clipboard.writeText(`http://shrinkify.app/${shrink()}`);
                             }
                         }}
                         class="flex items-center justify-center gap-2"
