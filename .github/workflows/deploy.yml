@@ -36,7 +36,6 @@ jobs:
                   PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
                   PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
               run: |
-                  printenv
                   npm run build
 
             - name: Upload Pages Artifact
