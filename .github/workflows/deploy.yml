@@ -44,7 +44,6 @@ jobs:
         environment: production
         needs: build
         steps:
-            - uses: actions/checkout@v2
             - uses: azure/login@v1
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -63,7 +62,7 @@ jobs:
               uses: azure/CLI@v1
               with:
                   inlineScript: |
-                      az storage blob upload-batch --overwrite --account-name ${{ vars.STORAGE_ACCOUNT_NAME }} --auth-mode key -d '$web' -s build
+                      az storage blob upload-batch --overwrite --account-name ${{ vars.STORAGE_ACCOUNT_NAME }} --auth-mode key -d '$web' -s _a
 
             - name: logout
               if: always()
