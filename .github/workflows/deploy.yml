@@ -41,6 +41,7 @@ jobs:
 
     deploy:
         runs-on: ubuntu-latest
+        environment: production
         needs: build
         steps:
             - uses: actions/checkout@v2
@@ -57,7 +58,6 @@ jobs:
               uses: azure/CLI@v1
               with:
                   inlineScript: |
-                      echo ${{ vars.STORAGE_ACCOUNT_NAME }}
                       az storage blob upload-batch --overwrite --account-name ${{ vars.STORAGE_ACCOUNT_NAME }} --auth-mode key -d '$web' -s .
 
             - name: logout
