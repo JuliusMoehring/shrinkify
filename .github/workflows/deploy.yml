@@ -54,6 +54,11 @@ jobs:
               with:
                   name: build
 
+            - name: Install
+              shell: 'bash'
+              run: |
+                  ls
+
             - name: Upload to blob storage
               uses: azure/CLI@v1
               with:
