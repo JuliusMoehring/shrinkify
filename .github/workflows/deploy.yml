@@ -52,7 +52,7 @@ jobs:
               uses: azure/CLI@v1
               with:
                   inlineScript: |
-                      az storage blob upload-batch --account-name ${{ vars.STORAGE_ACCOUNT_NAME }} --auth-mode key -d '$web' -s .
+                      az storage blob upload-batch --overwrite --account-name ${{ vars.STORAGE_ACCOUNT_NAME }} --auth-mode key -d '$web' -s .
 
             - name: logout
               if: always()
