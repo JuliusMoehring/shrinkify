@@ -53,16 +53,11 @@ jobs:
               with:
                   name: build
 
-            - name: Install
-              shell: 'bash'
-              run: |
-                  ls
-
             - name: Upload to blob storage
               uses: azure/CLI@v1
               with:
                   inlineScript: |
-                      az storage blob upload-batch --overwrite --account-name ${{ vars.STORAGE_ACCOUNT_NAME }} --auth-mode key -d '$web' -s _a
+                      az storage blob upload-batch --overwrite --account-name ${{ vars.STORAGE_ACCOUNT_NAME }} --auth-mode key -d '$web' -s .
 
             - name: logout
               if: always()
