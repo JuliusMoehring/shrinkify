@@ -48,6 +48,11 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+            - name: Download build
+              uses: actions/download-artifact@v2
+              with:
+                  name: build
+
             - name: Upload to blob storage
               uses: azure/CLI@v1
               with:
