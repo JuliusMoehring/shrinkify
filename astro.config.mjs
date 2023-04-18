@@ -12,7 +12,7 @@ dotenv.config();
 // https://astro.build/config
 export default defineConfig({
     site: process.env.PUBLIC_BASE_URL,
-    integrations: [tailwind(), solidJs(), sitemap()],
+    integrations: [tailwind(), solidJs(), sitemap({ customPages: [`${process.env.PUBLIC_BASE_URL}`] })],
     output: 'server',
     adapter: vercel(),
 });
