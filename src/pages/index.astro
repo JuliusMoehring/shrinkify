@@ -5,6 +5,7 @@ import Main from '../components/Main.astro';
 import { CreateShrink } from '../components/CreateShrink';
 import { Warning } from '../components/Warning';
 import FAQ from '../components/FAQ.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <Layout
@@ -19,5 +20,7 @@ import FAQ from '../components/FAQ.astro';
         <FAQ />
 
         <Warning client:load />
+
+        <Footer />
     </Main>
 </Layout>
