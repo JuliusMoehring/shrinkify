@@ -1,5 +1,5 @@
-import type { Accessor, Component } from 'solid-js';
-import { createEffect, createSignal } from 'solid-js';
+import { Accessor, Component, Show, createEffect, createSignal } from 'solid-js';
+import { QRCodeButton } from './QRCodeButton';
 import { Button } from './UI/Button';
 import { Dialog } from './UI/Dialog';
 
@@ -7,8 +7,25 @@ type ShrinkDialogProps = {
     shrink: Accessor<string | undefined>;
 };
 
+const createShrinkQRCode = async (shrink?: string) => {
+    if (!shrink) {
+        return;
+    }
+
+    const qrCode = await fetch(`${import.meta.env.PUBLIC_API_URL}/shrink/generate-qr-code`, {
+        method: 'POST',
+        body: JSON.stringify({ shrink }),
+    });
+
+    return qrCode.blob();
+};
+
+export const getURLFromShrink = (shrink: Accessor<string | undefined>) =>
+    `${import.meta.env.PUBLIC_BASE_URL}/${shrink()}`;
+
 export const ShrinkDialog: Component<ShrinkDialogProps> = ({ shrink }) => {
     const [open, setOpen] = createSignal(Boolean(shrink()));
+    const [qrCode, setQRCode] = createSignal<Blob>();
 
     createEffect(() => {
         if (shrink()) {
@@ -21,15 +38,15 @@ export const ShrinkDialog: Component<ShrinkDialogProps> = ({ shrink }) => {
             <div class="flex flex-col gap-8 @container">
                 <p class="text-center text-xl">🎉 Your shrink has been created! 🎉</p>
 
-                <div>
+                <div class="flex flex-col gap-2">
                     <p>
                         You can now share this link with your friends:{' '}
                         <a
-                            href={`http://shrinkify.app/${shrink()}`}
+                            href={getURLFromShrink(shrink)}
                             target="_blank"
                             class="break-words font-bold text-primary-500"
                         >
-                            {`http://shrinkify.app/${shrink()}`}
+                            {getURLFromShrink(shrink)}
                         </a>
                         .
                     </p>
@@ -39,15 +56,24 @@ export const ShrinkDialog: Component<ShrinkDialogProps> = ({ shrink }) => {
                     </p>
                 </div>
 
+                <Show when={qrCode()}>
+                    <div class="grid place-content-center">
+                        <img
+                            src={URL.createObjectURL(qrCode()!)}
+                            class="max-w-xs p-4"
+                            alt="QR code"
+                            draggable={false}
+                        />
+                    </div>
+                </Show>
+
                 <div class="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-                    <Button design="secondary" disabled>
-                        Create QR code (coming soon)
-                    </Button>
+                    <QRCodeButton shrink={shrink} qrCode={qrCode} setQRCode={setQRCode} />
 
                     <Button
                         onClick={() => {
                             if (shrink()) {
-                                navigator.clipboard.writeText(`http://shrinkify.app/${shrink()}`);
+                                navigator.clipboard.writeText(getURLFromShrink(shrink));
                             }
                         }}
                         class="flex items-center justify-center gap-2"
