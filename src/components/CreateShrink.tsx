@@ -1,6 +1,7 @@
 import type { Component } from 'solid-js';
 import { createSignal } from 'solid-js';
 import { z } from 'zod';
+import { useNotification } from '../contexts/NotificationContext';
 import { AdvancedShrinkOptions } from './AdvancedShrinkOptions';
 import { ShrinkDialog } from './ShrinkDialog';
 import { Button } from './UI/Button';
@@ -17,7 +18,7 @@ const CreateShrinkSchema = z.object({
 type CreateShrink = z.infer<typeof CreateShrinkSchema>;
 
 const createShrink = async (shrink: CreateShrink) => {
-    fetch(`${import.meta.env.PUBLIC_API_URL}/shrink`, {
+    await fetch(`${import.meta.env.PUBLIC_API_URL}/shrink`, {
         method: 'POST',
         body: JSON.stringify(shrink),
     });
@@ -28,6 +29,8 @@ export const CreateShrink: Component = () => {
     const [error, setError] = createSignal<z.ZodError>();
     const [shrink, setShrink] = createSignal<string>();
 
+    const createNotification = useNotification();
+
     return (
         <>
             <form
@@ -36,8 +39,8 @@ export const CreateShrink: Component = () => {
                 spellcheck={false}
                 novalidate
                 onSubmit={async event => {
-                    setCreateShrinkLoading(true);
                     event.preventDefault();
+                    setCreateShrinkLoading(true);
 
                     const formData = new FormData(event.currentTarget);
 
@@ -48,17 +51,30 @@ export const CreateShrink: Component = () => {
                     if (!parsedData.success) {
                         setError(parsedData.error);
                         setCreateShrinkLoading(false);
+
+                        createNotification({
+                            title: 'Shrink configuration invalid',
+                            message: 'Please check your shrink configuration and try again',
+                        });
+
                         return;
                     }
 
-                    await createShrink(parsedData.data);
+                    try {
+                        await createShrink(parsedData.data);
 
-                    setShrink(parsedData.data.origin);
+                        setShrink(parsedData.data.origin);
 
-                    setError(undefined);
+                        event.currentTarget.reset();
+                        event.currentTarget.reset();
+                    } catch (error) {
+                        createNotification({
+                            title: 'Creation failed',
+                            message: 'Could not create shrink. Please try again later.',
+                        });
+                    }
+
                     setCreateShrinkLoading(false);
-
-                    event.currentTarget.reset();
                 }}
             >
                 <ShrinkInput class="col-span-12 lg:col-span-5" error={error} />

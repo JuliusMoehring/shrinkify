@@ -2,8 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Main from '../components/Main.astro';
-import { CreateShrink } from '../components/CreateShrink';
 import { Warning } from '../components/Warning';
+import { App } from '../components/App';
 import FAQ from '../components/FAQ.astro';
 import Footer from '../components/Footer.astro';
 
@@ -17,7 +17,7 @@ import '../base.css';
     <Main>
         <Header />
 
-        <CreateShrink client:only />
+        <App client:load />
 
         <FAQ />
 

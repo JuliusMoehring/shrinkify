@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import type { Accessor, Component, JSX } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';
 import { z } from 'zod';
+import type { Notification } from '../../contexts/NotificationContext';
+import { useNotification } from '../../contexts/NotificationContext';
 
 type ShrinkInputProps = JSX.HTMLAttributes<HTMLDivElement> & {
     error: Accessor<z.ZodError<any> | undefined>;
@@ -12,31 +14,50 @@ const GenerateOriginResponseSchema = z.object({
     origin: z.string(),
 });
 
-const generateOrigin = async () => {
-    const result = await fetch(`${import.meta.env.PUBLIC_API_URL}/shrink/generate-origin`);
+const generateOrigin = async (createNotification: (notification: Notification) => Promise<void>) => {
+    try {
+        const result = await fetch(`${import.meta.env.PUBLIC_API_URL}/shrink/generate-origin`);
 
-    const data = await result.json();
+        const data = await result.json();
 
-    const parsedData = GenerateOriginResponseSchema.safeParse(data);
+        const parsedData = GenerateOriginResponseSchema.safeParse(data);
 
-    if (!parsedData.success) {
-        throw new Error('Invalid response');
+        if (!parsedData.success) {
+            throw new Error('Invalid response');
+        }
+
+        return parsedData.data.origin;
+    } catch (error) {
+        createNotification({
+            title: 'Generation failed',
+            message: 'Could not generate random shrink. Please try again later.',
+        });
     }
-
-    return parsedData.data.origin;
 };
 
-const checkOriginValidity = async (origin: string) => {
-    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/shrink/validate-origin`, {
-        method: 'POST',
-        body: JSON.stringify({ origin }),
-    });
+const checkOriginValidity = async (
+    origin: string,
+    createNotification: (notification: Notification) => Promise<void>,
+) => {
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/shrink/validate-origin`, {
+            method: 'POST',
+            body: JSON.stringify({ origin }),
+        });
 
-    if (response.status === 200) {
-        return true;
+        if (response.status === 200) {
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        createNotification({
+            title: 'Validation failed',
+            message: 'Could not validate your shrink. Please try again later.',
+        });
+
+        return false;
     }
-
-    return false;
 };
 
 type OnInputEvent = InputEvent & {
@@ -52,6 +73,8 @@ export const ShrinkInput: Component<ShrinkInputProps> = ({ error, ...attributes 
     const [shrinkGenerating, setShrinkGenerating] = createSignal(false);
     const [shrinkError, setShrinkError] = createSignal<boolean>(false);
 
+    const createNotification = useNotification();
+
     createEffect(() => {
         const inputErrors = error()?.formErrors.fieldErrors[INPUT_NAME];
 
@@ -64,7 +87,7 @@ export const ShrinkInput: Component<ShrinkInputProps> = ({ error, ...attributes 
     const trigger = debounce(async (event: OnInputEvent) => {
         const value = event.target.value;
 
-        const isValid = await checkOriginValidity(value);
+        const isValid = await checkOriginValidity(value, createNotification);
 
         const customValidity = isValid ? '' : 'Invalid';
 
@@ -75,13 +98,17 @@ export const ShrinkInput: Component<ShrinkInputProps> = ({ error, ...attributes 
 
     const handleGenerateRandom = async () => {
         setShrinkGenerating(true);
-        const randomString = await generateOrigin();
 
-        inputRef.value = randomString;
-        inputRef.setCustomValidity('');
+        const randomString = await generateOrigin(createNotification);
+
+        if (randomString) {
+            inputRef.value = randomString;
+            inputRef.setCustomValidity('');
+
+            setShrinkError(false);
+        }
 
         setShrinkGenerating(false);
-        setShrinkError(false);
     };
 
     return (
