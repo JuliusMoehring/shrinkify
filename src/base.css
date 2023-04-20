@@ -1,0 +1,13 @@
+/* The integration's default injected base.css file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}

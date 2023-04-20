@@ -1,4 +1,4 @@
-import  classNames from 'classnames';
+import classNames from 'classnames';
 import type { JSX, ParentComponent } from 'solid-js';
 
 type LinkButtonProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -9,7 +9,10 @@ export const LinkButton: ParentComponent<LinkButtonProps> = ({ design = 'primary
     return (
         <a
             {...attributes}
-            class={classNames(attributes.class, "cursor-pointer rounded-md px-3 py-2 text-sm shadow-sm hover:scale-push")}
+            class={classNames(
+                attributes.class,
+                'cursor-pointer rounded-md px-3 py-2 text-sm shadow-sm hover:scale-push',
+            )}
             classList={{
                 'bg-primary-600 font-semibold text-white hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600':
                     design === 'primary',

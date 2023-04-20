@@ -1,23 +1,11 @@
-import { Accessor, Component, Show, createEffect, createSignal } from 'solid-js';
+import type { Accessor, Component } from 'solid-js';
+import { Show, createEffect, createSignal } from 'solid-js';
 import { QRCodeButton } from './QRCodeButton';
 import { Button } from './UI/Button';
 import { Dialog } from './UI/Dialog';
 
 type ShrinkDialogProps = {
     shrink: Accessor<string | undefined>;
-};
-
-const createShrinkQRCode = async (shrink?: string) => {
-    if (!shrink) {
-        return;
-    }
-
-    const qrCode = await fetch(`${import.meta.env.PUBLIC_API_URL}/shrink/generate-qr-code`, {
-        method: 'POST',
-        body: JSON.stringify({ shrink }),
-    });
-
-    return qrCode.blob();
 };
 
 export const getURLFromShrink = (shrink: Accessor<string | undefined>) =>

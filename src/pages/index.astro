@@ -6,6 +6,8 @@ import { CreateShrink } from '../components/CreateShrink';
 import { Warning } from '../components/Warning';
 import FAQ from '../components/FAQ.astro';
 import Footer from '../components/Footer.astro';
+
+import '../base.css';
 ---
 
 <Layout
@@ -15,7 +17,7 @@ import Footer from '../components/Footer.astro';
     <Main>
         <Header />
 
-        <CreateShrink client:load />
+        <CreateShrink client:only />
 
         <FAQ />
 

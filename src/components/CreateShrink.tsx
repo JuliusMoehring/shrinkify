@@ -1,5 +1,7 @@
-import { Component, createSignal } from 'solid-js';
+import type { Component } from 'solid-js';
+import { createSignal } from 'solid-js';
 import { z } from 'zod';
+import { AdvancedShrinkOptions } from './AdvancedShrinkOptions';
 import { ShrinkDialog } from './ShrinkDialog';
 import { Button } from './UI/Button';
 import { Input } from './UI/Input';
@@ -8,7 +10,8 @@ import { ShrinkInput } from './UI/ShrinkInput';
 const CreateShrinkSchema = z.object({
     origin: z.string().min(1),
     target: z.string().url(),
-    status: z.number(),
+    statusCode: z.string().pipe(z.coerce.number()).default('303'),
+    expireDate: z.string().pipe(z.coerce.date()).optional(),
 });
 
 type CreateShrink = z.infer<typeof CreateShrinkSchema>;
@@ -40,10 +43,7 @@ export const CreateShrink: Component = () => {
 
                     const data = Object.fromEntries(formData);
 
-                    const parsedData = CreateShrinkSchema.safeParse({
-                        ...data,
-                        status: 303,
-                    });
+                    const parsedData = CreateShrinkSchema.safeParse(data);
 
                     if (!parsedData.success) {
                         setError(parsedData.error);
@@ -55,10 +55,10 @@ export const CreateShrink: Component = () => {
 
                     setShrink(parsedData.data.origin);
 
-                    event.currentTarget.reset();
-
                     setError(undefined);
                     setCreateShrinkLoading(false);
+
+                    event.currentTarget.reset();
                 }}
             >
                 <ShrinkInput class="col-span-12 lg:col-span-5" error={error} />
@@ -77,6 +77,10 @@ export const CreateShrink: Component = () => {
                     <Button class="w-full" type="submit" disabled={createShrinkLoading()}>
                         Create shrink
                     </Button>
+                </div>
+
+                <div class="col-span-12">
+                    <AdvancedShrinkOptions />
                 </div>
             </form>
 

@@ -1,4 +1,5 @@
-import { Accessor, Component, Match, Setter, Switch } from 'solid-js';
+import type { Accessor, Component, Setter } from 'solid-js';
+import { Match, Switch } from 'solid-js';
 import { getURLFromShrink } from './ShrinkDialog';
 import { Button } from './UI/Button';
 import { LinkButton } from './UI/LinkButton';

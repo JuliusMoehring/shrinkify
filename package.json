@@ -6,6 +6,7 @@
         "astro": "astro",
         "build": "astro check && tsc --noEmit && astro build",
         "dev": "astro dev",
+        "dev:expose": "astro dev --host",
         "format": "prettier --write .",
         "lint:fix": "npx eslint --fix \"src/**/*.{ts,tsx,astro}\"",
         "lint": "npx eslint \"src/**/*.{ts,tsx,astro}\"",
